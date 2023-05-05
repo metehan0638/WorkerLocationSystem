@@ -20,8 +20,7 @@ dependencies:
   http: ^0.13.5
   get: ^4.6.5
   pausable_timer: ^1.0.0+7
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
+ 
 
 dev_dependencies:
   flutter_test:
