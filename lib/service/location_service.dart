@@ -11,7 +11,7 @@ class LocationService {
 
     late List locationList;
     var response = await http.post(Uri.parse("http://10.0.2.2/login/konum.php"),
-        body: {'isci_id': Isci.isciId});
+        body: {'worker_id': Isci.workerId,'worker_name':Isci.workerName,'worker_surname':Isci.workerSurname});
 
     if (response.statusCode == 200) {
       locationList = await jsonDecode(response.body);

@@ -1,6 +1,5 @@
 class User {
-  static String? isciId;
+  static String? id;
   static String? firstName;
-  static String? lastName;
   static String? status;
 }

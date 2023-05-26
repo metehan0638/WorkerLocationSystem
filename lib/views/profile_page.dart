@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:worker_location_system/models/current_user.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -37,6 +38,9 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
+                Text(
+                    '${User.firstName!.toUpperCase()} Kullanıcısı :  ${User.status}',
+                    style: Constants.googleFont),
                 Column(
                   children: [
                     Container(

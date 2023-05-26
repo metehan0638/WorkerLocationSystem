@@ -1,5 +1,10 @@
+import 'dart:io';
+import 'package:path/path.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:worker_location_system/constants/const.dart';
 import 'package:worker_location_system/controllers/location_controller.dart';
+import 'package:worker_location_system/models/current_isci.dart';
 import 'package:worker_location_system/service/location_service.dart';
 import 'dart:core';
 import 'package:flutter/material.dart';
@@ -15,6 +20,26 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final konumController = Get.find<LocationController>();
+  File? myImage;
+  Future getImage() async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) {
+      return;
+    } else {
+      //  final imageTemp = File(image.path);
+      final storedImage = await savePickedImage(image.path);
+      setState(() {
+        myImage = storedImage;
+      });
+    }
+  }
+
+  Future<File> savePickedImage(String imagePath) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final name = basename(imagePath);
+    final image = File('${directory.path}/$name');
+    return File(imagePath).copy(image.path);
+  }
 
   @override
   void initState() {
@@ -61,7 +86,15 @@ class HomePageState extends State<HomePage> {
                       decoration: BoxDecoration(boxShadow: [
                         BoxShadow(color: Colors.grey.shade600, blurRadius: 17)
                       ]),
-                      child: Image.asset(Constants.mapUrl)),
+                      child: myImage != null
+                          ? Image.file(
+                              semanticLabel: 'map',
+                              myImage!,
+                              fit: BoxFit.fill,
+                              width: 300,
+                              height: 300,
+                            )
+                          : Image.asset(Constants.mapUrl)),
                   Obx(
                     () => Positioned(
                       top: konumController.top.value,
@@ -71,13 +104,55 @@ class HomePageState extends State<HomePage> {
                           : SizedBox(
                               height: 48,
                               width: 48,
-                              child:
-                                  Image.asset(Constants.personLocationGifUrl)),
+                              child: GestureDetector(
+                                  onDoubleTap: () {
+                                    Get.defaultDialog(
+                                      backgroundColor: Colors.yellow,
+                                      title: 'İŞÇİ BİLGİLERİ',
+                                      content: Column(
+                                        children: [
+                                          ListTile(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12)),
+                                            trailing: Text('${Isci.workerId}'),
+                                            leading: const Text('İşçi id no'),
+                                          ),
+                                          ListTile(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12)),
+                                            trailing:
+                                                Text('${Isci.workerName}'),
+                                            leading: const Text('İşçi soyisim'),
+                                          ),
+                                          ListTile(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(12)),
+                                            trailing:
+                                                Text('${Isci.workerSurname}'),
+                                            leading: const Text('İşçi ismi'),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                  child: Image.asset(
+                                      Constants.personLocationGifUrl))),
                     ),
                   )
                 ],
               ),
             ),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  getImage();
+                },
+                child: const Text('Haritayı galeriden seç'))
           ],
         ),
       ),

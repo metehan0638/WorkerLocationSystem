@@ -18,13 +18,10 @@ class WorkerListPage extends StatefulWidget {
 class _WorkerListPageState extends State<WorkerListPage> {
   @override
   void initState() {
-
     super.initState();
 
     setState(() {
       WorkerListService.getWorkerList();
-
-    
     });
   }
 
@@ -32,11 +29,9 @@ class _WorkerListPageState extends State<WorkerListPage> {
   late final GetMaterialController controller;
   @override
   Widget build(BuildContext context) {
- 
     final workerListController = Get.find<WorkerListController>();
     final ThemeController themeController = Get.find();
     return Scaffold(
-      
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           WorkerListService.getWorkerList();
@@ -70,8 +65,12 @@ class _WorkerListPageState extends State<WorkerListPage> {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      Isci.isciId =
-                          workerListController.workerList[index]['isci_id'];
+                      Isci.workerId =
+                          workerListController.workerList[index]['worker_id'];
+                      Isci.workerName =
+                          workerListController.workerList[index]['worker_name'];
+                      Isci.workerSurname = workerListController
+                          .workerList[index]['worker_surname'];
                       Get.toNamed(Routes.HOME_PAGE);
                     },
                     child: Padding(
@@ -103,14 +102,14 @@ class _WorkerListPageState extends State<WorkerListPage> {
                                   const EdgeInsets.symmetric(vertical: 25.0),
                               child: themeController.isDarkMode.value == true
                                   ? Text(
-                                      ' ${workerListController.workerList[index]['isci_id']}.İşçi',
+                                      ' ${workerListController.workerList[index]['worker_id']}.${workerListController.workerList[index]['worker_name']} ${workerListController.workerList[index]['worker_surname']}',
                                       style: GoogleFonts.mPlus1(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w600,
                                           color: Colors.white),
                                     )
                                   : Text(
-                                      ' ${workerListController.workerList[index]['isci_id']}.İşçi',
+                                      ' ${workerListController.workerList[index]['worker_id']}.${workerListController.workerList[index]['worker_name']} ${workerListController.workerList[index]['worker_surname']}',
                                       style: GoogleFonts.mPlus1(
                                           fontSize: 18,
                                           fontWeight: FontWeight.w600,
@@ -126,4 +125,3 @@ class _WorkerListPageState extends State<WorkerListPage> {
     );
   }
 }
-

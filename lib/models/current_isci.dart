@@ -1,3 +1,5 @@
 class Isci {
-  static String? isciId; 
+  static String? workerId;
+  static String? workerName;
+  static String? workerSurname;
 }

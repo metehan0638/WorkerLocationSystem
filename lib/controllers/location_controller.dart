@@ -8,7 +8,7 @@ class LocationController extends GetxController {
   bool loading = true;
 
   Timer? myTimer;
-  
+
   void startTimer() {
     myTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
       LocationService.fetchLocation();

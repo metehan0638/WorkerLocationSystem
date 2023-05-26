@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 class Constants {
   static const String loginText = 'L o g i n';
   static const String workersUrl = "lib/assets/workers.png";
@@ -6,4 +9,6 @@ class Constants {
   static const String backgroundUrl = "lib/assets/bg_workers.jpeg";
   static const String personLocationGifUrl = "lib/assets/person_location.gif";
   static const String mapUrl = "lib/assets/mykorki.png";
+  static TextStyle googleFont =
+      GoogleFonts.mPlus1(fontWeight: FontWeight.w600, color: Colors.black);
 }
