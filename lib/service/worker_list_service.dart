@@ -15,6 +15,7 @@ class WorkerListService {
     if (response.statusCode == 200) {
       workerListController.workerList.value = jsonDecode(response.body);
       workerListController.loading.value = false;
+      
       return workerListController.workerList;
     } else {
       throw Exception('Error while fetch api');

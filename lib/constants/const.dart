@@ -11,4 +11,6 @@ class Constants {
   static const String mapUrl = "lib/assets/mykorki.png";
   static TextStyle googleFont =
       GoogleFonts.mPlus1(fontWeight: FontWeight.w600, color: Colors.black);
+      static TextStyle profileUserFontStyle =
+      GoogleFonts.mPlus1(fontWeight: FontWeight.w600, color: Colors.black);
 }

@@ -38,9 +38,23 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
-                    '${User.firstName!.toUpperCase()} Kullanıcısı :  ${User.status}',
-                    style: Constants.googleFont),
+                const SizedBox(
+                  height: 15,
+                ),
+                Obx(() => Text(
+                    '${User.firstName!.toUpperCase()} Kullanıcısı: ${User.status!.toUpperCase()}',
+                    style: themeController.isDarkMode.value == true
+                        ? GoogleFonts.mPlus1(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white70)
+                        : GoogleFonts.mPlus1(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black))),
+                const SizedBox(
+                  height: 15,
+                ),
                 Column(
                   children: [
                     Container(

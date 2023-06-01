@@ -107,32 +107,54 @@ class HomePageState extends State<HomePage> {
                               child: GestureDetector(
                                   onDoubleTap: () {
                                     Get.defaultDialog(
-                                      backgroundColor: Colors.yellow,
+                                      backgroundColor: Colors.green,
                                       title: 'İŞÇİ BİLGİLERİ',
+                                      titleStyle: const TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                       content: Column(
                                         children: [
                                           ListTile(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12)),
-                                            trailing: Text('${Isci.workerId}'),
-                                            leading: const Text('İşçi id no'),
+                                            tileColor: Colors.transparent,
+                                            trailing: Text('${Isci.workerId}',
+                                                style: const TextStyle(
+                                                    color: Colors.white)),
+                                            leading: const Text(
+                                              'İşçi id no',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          const Divider(
+                                            color: Colors.white,
                                           ),
                                           ListTile(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12)),
-                                            trailing:
-                                                Text('${Isci.workerName}'),
-                                            leading: const Text('İşçi soyisim'),
+                                            tileColor: Colors.transparent,
+                                            trailing: Text(
+                                                Isci.workerName!.toUpperCase(),
+                                                style: const TextStyle(
+                                                    color: Colors.white)),
+                                            leading: const Text('İşçi adı',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white)),
+                                          ),
+                                          const Divider(
+                                            color: Colors.white,
                                           ),
                                           ListTile(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(12)),
-                                            trailing:
-                                                Text('${Isci.workerSurname}'),
-                                            leading: const Text('İşçi ismi'),
+                                            tileColor: Colors.transparent,
+                                            trailing: Text(
+                                                Isci.workerSurname!
+                                                    .toUpperCase(),
+                                                style: const TextStyle(
+                                                    color: Colors.white)),
+                                            leading: const Text('İşçi Soyadı',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white)),
                                           ),
                                         ],
                                       ),

@@ -24,6 +24,7 @@ class LoginService {
         User.id = datauser[0]['isci_id'];
         User.firstName = datauser[0]['username'];
         User.status = datauser[0]['status'];
+        
         loginController.successfulLogin();
       }
     } catch (e) {

@@ -16,21 +16,43 @@ class WorkerListPage extends StatefulWidget {
 }
 
 class _WorkerListPageState extends State<WorkerListPage> {
+  final workerListController = Get.find<WorkerListController>();
+  final ThemeController themeController = Get.find();
+  List foundWorkers = [];
   @override
   void initState() {
     super.initState();
 
     setState(() {
       WorkerListService.getWorkerList();
+      foundWorkers = workerListController.workerList;
     });
   }
 
-  late final bool isBuilding;
-  late final GetMaterialController controller;
+  void workerFilter(String enteredKeyword) {
+    List results = [];
+    if (enteredKeyword.isEmpty) {
+      results = workerListController.workerList;
+    } else {
+      results = workerListController.workerList
+          .where((worker) => worker["worker_name"]
+              .toLowerCase()
+              .contains(enteredKeyword.toLowerCase()))
+          .toList();
+    }
+    setState(() {
+      foundWorkers = results;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    workerListController.searchFieldController;
+  }
+
   @override
   Widget build(BuildContext context) {
-    final workerListController = Get.find<WorkerListController>();
-    final ThemeController themeController = Get.find();
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -55,73 +77,120 @@ class _WorkerListPageState extends State<WorkerListPage> {
             style: GoogleFonts.mPlus1(
                 fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white),
           )),
-      body: Obx(
-        () => workerListController.loading.value
-            ? const Center(
-                child: CircularProgressIndicator(),
-              )
-            : ListView.builder(
-                itemCount: workerListController.workerList.length,
-                itemBuilder: (context, index) {
-                  return GestureDetector(
-                    onTap: () {
-                      Isci.workerId =
-                          workerListController.workerList[index]['worker_id'];
-                      Isci.workerName =
-                          workerListController.workerList[index]['worker_name'];
-                      Isci.workerSurname = workerListController
-                          .workerList[index]['worker_surname'];
-                      Get.toNamed(Routes.HOME_PAGE);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 2.0, horizontal: 4),
-                      child: Obx(() => ListTile(
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                  width: 2, color: Colors.white),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            trailing: themeController.isDarkMode.value == true
-                                ? const Icon(
-                                    Icons.keyboard_arrow_right,
-                                    color: Colors.white,
-                                    size: 36,
-                                  )
-                                : const Icon(
-                                    Icons.keyboard_arrow_right,
-                                    color: Colors.black87,
-                                    size: 36,
-                                  ),
-                            leading: CircleAvatar(
-                              radius: 35,
-                              child: Image.asset(Constants.workerUrl),
-                            ),
-                            title: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 25.0),
-                              child: themeController.isDarkMode.value == true
-                                  ? Text(
-                                      ' ${workerListController.workerList[index]['worker_id']}.${workerListController.workerList[index]['worker_name']} ${workerListController.workerList[index]['worker_surname']}',
-                                      style: GoogleFonts.mPlus1(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.white),
-                                    )
-                                  : Text(
-                                      ' ${workerListController.workerList[index]['worker_id']}.${workerListController.workerList[index]['worker_name']} ${workerListController.workerList[index]['worker_surname']}',
-                                      style: GoogleFonts.mPlus1(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                          color: Colors.black),
-                                    ),
-                            ),
-                          )),
+      body: Obx(() => workerListController.loading.value
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: TextField(
+                      onChanged: (value) => workerFilter(value),
+                      focusNode: workerListController.focusNode,
+                      textInputAction: TextInputAction.none,
+                      controller: workerListController.searchFieldController,
+                      decoration: InputDecoration(
+                          enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                  width: 2,
+                                  color:
+                                      themeController.isDarkMode.value == true
+                                          ? Colors.white
+                                          : Colors.blue)),
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                              borderSide: BorderSide(
+                                  width: 2,
+                                  color:
+                                      themeController.isDarkMode.value == true
+                                          ? Colors.green
+                                          : Colors.blue)),
+                          hintText: 'Bir işçi arayın',
+                          hintStyle: themeController.isDarkMode.value == true
+                              ? TextStyle(color: Colors.grey[300])
+                              : const TextStyle(color: Colors.grey),
+                          prefixIcon: Icon(Icons.person_search,
+                              color: themeController.isDarkMode.value == true
+                                  ? Colors.white
+                                  : Colors.blue),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(
+                              vertical: 16.0, horizontal: 16.0)),
                     ),
-                  );
-                },
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    controller: workerListController.scrollController,
+                    itemCount: foundWorkers.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          workerListController.focusNode.unfocus();
+                          Isci.workerId = workerListController.workerList[index]
+                              ['worker_id'];
+                          Isci.workerName = workerListController
+                              .workerList[index]['worker_name'];
+                          Isci.workerSurname = workerListController
+                              .workerList[index]['worker_surname'];
+                          Get.toNamed(Routes.HOME_PAGE);
+                        },
+                        child: Obx(() => Card(
+                              key: ValueKey(foundWorkers[index]['worker_id']),
+                              child: ListTile(
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(
+                                      width: 2, color: Colors.white),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                trailing:
+                                    themeController.isDarkMode.value == true
+                                        ? const Icon(
+                                            Icons.keyboard_arrow_right,
+                                            color: Colors.white,
+                                            size: 36,
+                                          )
+                                        : const Icon(
+                                            Icons.keyboard_arrow_right,
+                                            color: Colors.black87,
+                                            size: 36,
+                                          ),
+                                leading: CircleAvatar(
+                                  radius: 35,
+                                  child: Image.asset(Constants.workerUrl),
+                                ),
+                                title: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 25.0),
+                                  child:
+                                      themeController.isDarkMode.value == true
+                                          ? Text(
+                                              ' ${foundWorkers[index]['worker_id']}.${foundWorkers[index]['worker_name']} ${foundWorkers[index]['worker_surname']}',
+                                              style: GoogleFonts.mPlus1(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.white),
+                                            )
+                                          : Text(
+                                              ' ${foundWorkers[index]['worker_id']}.${foundWorkers[index]['worker_name']} ${foundWorkers[index]['worker_surname']}',
+                                              style: GoogleFonts.mPlus1(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Colors.black),
+                                            ),
+                                ),
+                              ),
+                            )),
+                      );
+                    },
+                  ),
+                ],
               ),
-      ),
+            )),
     );
   }
 }
