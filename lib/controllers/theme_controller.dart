@@ -11,8 +11,8 @@ class ThemeController extends GetxController {
           BottomNavigationBarThemeData(backgroundColor: HexColor('C58940')),
       listTileTheme: ListTileThemeData(tileColor: HexColor('E5BA73')),
       scaffoldBackgroundColor: HexColor('FAEAB1'),
-      floatingActionButtonTheme:
-          const FloatingActionButtonThemeData(backgroundColor: Colors.green),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.green.withOpacity(0.85)),
       appBarTheme: AppBarTheme(color: HexColor('C58940')));
 
   ThemeData myDarkTheme = ThemeData(
@@ -21,7 +21,7 @@ class ThemeController extends GetxController {
       dialogBackgroundColor: HexColor('19376D'),
       listTileTheme: ListTileThemeData(tileColor: HexColor('576CBC')),
       scaffoldBackgroundColor: HexColor('19376D'),
-      floatingActionButtonTheme:
-          FloatingActionButtonThemeData(backgroundColor: HexColor('0B2447')),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: HexColor('0B2447').withOpacity(0.85)),
       appBarTheme: AppBarTheme(color: HexColor('0B2447')));
 }

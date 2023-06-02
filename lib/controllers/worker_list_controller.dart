@@ -6,5 +6,5 @@ class WorkerListController extends GetxController {
   RxBool loading = true.obs;
   TextEditingController searchFieldController = TextEditingController();
   final FocusNode focusNode = FocusNode();
-   ScrollController scrollController = ScrollController();
+  ScrollController scrollController = ScrollController();
 }

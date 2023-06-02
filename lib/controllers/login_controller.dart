@@ -24,7 +24,7 @@ class LoginController extends GetxController {
               child: Image.asset(Constants.successfulLoginUrl))),
     );
     await Future.delayed(const Duration(seconds: 2));
-    Get.toNamed(Routes.WORKER_LIST_PAGE);
+    Get.offAndToNamed(Routes.WORKER_LIST_PAGE);
     user.value.clear();
     pass.value.clear();
   }

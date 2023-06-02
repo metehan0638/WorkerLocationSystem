@@ -1,4 +1,5 @@
 import 'package:worker_location_system/constants/const.dart';
+import 'package:worker_location_system/controllers/location_controller.dart';
 import 'package:worker_location_system/controllers/theme_controller.dart';
 import 'package:worker_location_system/models/current_isci.dart';
 import 'package:worker_location_system/controllers/worker_list_controller.dart';
@@ -18,6 +19,7 @@ class WorkerListPage extends StatefulWidget {
 class _WorkerListPageState extends State<WorkerListPage> {
   final workerListController = Get.find<WorkerListController>();
   final ThemeController themeController = Get.find();
+  final konumController = Get.find<LocationController>();
   List foundWorkers = [];
   @override
   void initState() {
@@ -54,21 +56,38 @@ class _WorkerListPageState extends State<WorkerListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          WorkerListService.getWorkerList();
-        },
-        splashColor: Colors.lightGreenAccent,
-        highlightElevation: 22,
-        foregroundColor: Colors.white,
-        elevation: 24,
-        child: const Icon(
-          Icons.refresh_sharp,
-          size: 33,
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: SizedBox(
+        width: 130,
+        height: 70,
+        child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          onPressed: () {
+            WorkerListService.getWorkerList();
+            debugPrint(foundWorkers.toString());
+          },
+          splashColor: Colors.lightGreenAccent,
+          highlightElevation: 22,
+          foregroundColor: Colors.white,
+          elevation: 24,
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 5.0, right: 10, top: 5),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: const [
+                Expanded(child: Icon(size: 24, Icons.refresh)),
+                Expanded(
+                    child: Text(
+                  'İşçi listesini güncelle',
+                  style: TextStyle(fontSize: 13),
+                ))
+              ],
+            ),
+          ),
         ),
       ),
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.miniCenterFloat,
       appBar: AppBar(
           automaticallyImplyLeading: false,
           centerTitle: true,
@@ -77,69 +96,81 @@ class _WorkerListPageState extends State<WorkerListPage> {
             style: GoogleFonts.mPlus1(
                 fontSize: 24, fontWeight: FontWeight.w600, color: Colors.white),
           )),
-      body: Obx(() => workerListController.loading.value
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : SingleChildScrollView(
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: TextField(
-                      onChanged: (value) => workerFilter(value),
-                      focusNode: workerListController.focusNode,
-                      textInputAction: TextInputAction.none,
-                      controller: workerListController.searchFieldController,
-                      decoration: InputDecoration(
-                          enabledBorder: OutlineInputBorder(
+      body: Obx(
+        () => workerListController.loading.value
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        onEditingComplete: () =>
+                            workerListController.focusNode.unfocus(),
+                        onSubmitted: (value) =>
+                            workerListController.focusNode.unfocus(),
+                        onTapOutside: (event) =>
+                            workerListController.focusNode.unfocus(),
+                        style: TextStyle(
+                            color: themeController.isDarkMode.value == true
+                                ? Colors.white
+                                : Colors.black),
+                        onChanged: (value) => workerFilter(value),
+                        focusNode: workerListController.focusNode,
+                        textInputAction: TextInputAction.none,
+                        controller: workerListController.searchFieldController,
+                        decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                    width: 2,
+                                    color:
+                                        themeController.isDarkMode.value == true
+                                            ? Colors.white
+                                            : Colors.blue)),
+                            focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: BorderSide(
+                                    width: 2,
+                                    color:
+                                        themeController.isDarkMode.value == true
+                                            ? Colors.green
+                                            : Colors.blue)),
+                            hintText: 'Bir işçi arayın',
+                            hintStyle: themeController.isDarkMode.value == true
+                                ? TextStyle(color: Colors.grey[300])
+                                : const TextStyle(color: Colors.grey),
+                            prefixIcon: Icon(Icons.person_search,
+                                color: themeController.isDarkMode.value == true
+                                    ? Colors.white
+                                    : Colors.blue),
+                            border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                  width: 2,
-                                  color:
-                                      themeController.isDarkMode.value == true
-                                          ? Colors.white
-                                          : Colors.blue)),
-                          focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
-                              borderSide: BorderSide(
-                                  width: 2,
-                                  color:
-                                      themeController.isDarkMode.value == true
-                                          ? Colors.green
-                                          : Colors.blue)),
-                          hintText: 'Bir işçi arayın',
-                          hintStyle: themeController.isDarkMode.value == true
-                              ? TextStyle(color: Colors.grey[300])
-                              : const TextStyle(color: Colors.grey),
-                          prefixIcon: Icon(Icons.person_search,
-                              color: themeController.isDarkMode.value == true
-                                  ? Colors.white
-                                  : Colors.blue),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                              vertical: 16.0, horizontal: 16.0)),
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                                vertical: 16.0, horizontal: 16.0)),
+                      ),
                     ),
-                  ),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    controller: workerListController.scrollController,
-                    itemCount: foundWorkers.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          workerListController.focusNode.unfocus();
-                          Isci.workerId = workerListController.workerList[index]
-                              ['worker_id'];
-                          Isci.workerName = workerListController
-                              .workerList[index]['worker_name'];
-                          Isci.workerSurname = workerListController
-                              .workerList[index]['worker_surname'];
-                          Get.toNamed(Routes.HOME_PAGE);
-                        },
-                        child: Obx(() => Card(
+                    ListView.builder(
+                      shrinkWrap: true,
+                      controller: workerListController.scrollController,
+                      itemCount: foundWorkers.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            workerListController.focusNode.unfocus();
+                            Isci.workerId = foundWorkers[index]['worker_id'];
+                            Isci.workerName =
+                                foundWorkers[index]['worker_name'];
+                            Isci.workerSurname =
+                                foundWorkers[index]['worker_surname'];
+
+                            Get.toNamed(Routes.HOME_PAGE);
+                          },
+                          child: Obx(
+                            () => Card(
                               key: ValueKey(foundWorkers[index]['worker_id']),
                               child: ListTile(
                                 shape: RoundedRectangleBorder(
@@ -184,13 +215,15 @@ class _WorkerListPageState extends State<WorkerListPage> {
                                             ),
                                 ),
                               ),
-                            )),
-                      );
-                    },
-                  ),
-                ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            )),
+      ),
     );
   }
 }

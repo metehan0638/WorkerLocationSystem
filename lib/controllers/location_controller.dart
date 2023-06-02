@@ -6,7 +6,7 @@ class LocationController extends GetxController {
   RxDouble top = 0.0.obs;
   RxDouble left = 0.0.obs;
   bool loading = true;
-
+late List locationList;
   Timer? myTimer;
 
   void startTimer() {
