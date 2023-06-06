@@ -20,6 +20,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final konumController = Get.find<LocationController>();
+  
   File? myImage;
   Future getImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -47,6 +48,8 @@ class HomePageState extends State<HomePage> {
 
     LocationService.fetchLocation();
     konumController.startTimer();
+    var top = konumController.top.value;
+    var left = konumController.left.value;
   }
 
   @override
