@@ -58,11 +58,11 @@ class _WorkerListPageState extends State<WorkerListPage> {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       floatingActionButton: SizedBox(
-        width: 130,
-        height: 70,
+        width: 65,
+        height: 60,
         child: FloatingActionButton(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(32),
           ),
           onPressed: () {
             WorkerListService.getWorkerList();
@@ -72,20 +72,7 @@ class _WorkerListPageState extends State<WorkerListPage> {
           highlightElevation: 22,
           foregroundColor: Colors.white,
           elevation: 24,
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 5.0, right: 10, top: 5),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: const [
-                Expanded(child: Icon(size: 24, Icons.refresh)),
-                Expanded(
-                    child: Text(
-                  'İşçi listesini güncelle',
-                  style: TextStyle(fontSize: 13),
-                ))
-              ],
-            ),
-          ),
+          child: const Icon(size: 24, Icons.refresh),
         ),
       ),
       appBar: AppBar(
@@ -101,12 +88,12 @@ class _WorkerListPageState extends State<WorkerListPage> {
             ? const Center(
                 child: CircularProgressIndicator(),
               )
-            : SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: TextField(
+            : Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Obx(
+                      () => TextField(
                         onEditingComplete: () =>
                             workerListController.focusNode.unfocus(),
                         onSubmitted: (value) =>
@@ -120,18 +107,19 @@ class _WorkerListPageState extends State<WorkerListPage> {
                         onChanged: (value) => workerFilter(value),
                         focusNode: workerListController.focusNode,
                         textInputAction: TextInputAction.none,
-                        controller: workerListController.searchFieldController,
+                        controller:
+                            workerListController.searchFieldController.value,
                         decoration: InputDecoration(
                             enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     width: 2,
                                     color:
                                         themeController.isDarkMode.value == true
                                             ? Colors.white
-                                            : Colors.blue)),
+                                            : Colors.blueGrey)),
                             focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
                                     width: 2,
                                     color:
@@ -147,13 +135,16 @@ class _WorkerListPageState extends State<WorkerListPage> {
                                     ? Colors.white
                                     : Colors.blue),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                             contentPadding: const EdgeInsets.symmetric(
                                 vertical: 16.0, horizontal: 16.0)),
                       ),
                     ),
-                    ListView.builder(
+                  ),
+                  Expanded(
+                    child: ListView.builder(
+                      physics: const BouncingScrollPhysics(),
                       shrinkWrap: true,
                       controller: workerListController.scrollController,
                       itemCount: foundWorkers.length,
@@ -220,8 +211,8 @@ class _WorkerListPageState extends State<WorkerListPage> {
                         );
                       },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
       ),
     );

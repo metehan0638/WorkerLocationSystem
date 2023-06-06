@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 class WorkerListController extends GetxController {
   RxList workerList = [].obs;
   RxBool loading = true.obs;
-  TextEditingController searchFieldController = TextEditingController();
+  Rx<TextEditingController> searchFieldController =TextEditingController().obs;
   final FocusNode focusNode = FocusNode();
   ScrollController scrollController = ScrollController();
 }

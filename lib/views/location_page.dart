@@ -163,7 +163,19 @@ class HomePageState extends State<HomePage> {
                                   child: Image.asset(
                                       Constants.personLocationGifUrl))),
                     ),
-                  )
+                  ),
+                  Obx(() => Positioned(
+                      top: konumController.sTop.value,
+                      left: konumController.sLeft.value,
+                      child: Opacity(
+                          opacity: 0.7,
+                          child: Image.asset(Constants.personLocationGifUrl)))),
+                  Obx(() => Positioned(
+                      top: konumController.tTop.value,
+                      left: konumController.tLeft.value,
+                      child: Opacity(
+                          opacity: 0.4,
+                          child: Image.asset(Constants.personLocationGifUrl)))),
                 ],
               ),
             ),
