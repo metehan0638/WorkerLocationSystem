@@ -157,6 +157,11 @@ class _WorkerListPageState extends State<WorkerListPage> {
                                 foundWorkers[index]['worker_name'];
                             Isci.workerSurname =
                                 foundWorkers[index]['worker_surname'];
+                            Isci.workerGender =
+                                foundWorkers[index]['worker_gender'];
+                            Isci.workerRole =
+                                foundWorkers[index]['worker_role'];
+                            Isci.workerAge = foundWorkers[index]['worker_age'];
 
                             Get.toNamed(Routes.HOME_PAGE);
                           },

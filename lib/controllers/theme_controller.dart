@@ -7,6 +7,9 @@ class ThemeController extends GetxController {
   RxString lightMode = 'Aydınlık Mod'.obs;
   RxString darkMode = 'Karanlık Mod'.obs;
   ThemeData myLightTheme = ThemeData(
+    
+      elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(backgroundColor: Colors.red)),
       bottomNavigationBarTheme:
           BottomNavigationBarThemeData(backgroundColor: HexColor('C58940')),
       listTileTheme: ListTileThemeData(tileColor: HexColor('E5BA73')),

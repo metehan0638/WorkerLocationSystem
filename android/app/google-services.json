@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1028809053483",
+    "project_id": "workerlocationsystem",
+    "storage_bucket": "workerlocationsystem.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028809053483:android:cc5f9eb198c86894b3616e",
+        "android_client_info": {
+          "package_name": "com.example.bitirme_projesi_last"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1028809053483-fd9f00qpor3va30c2qgdqsbsp10uncad.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyANHqOYzq3yZc3XBqMy56onWRPg2U22wBA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1028809053483-fd9f00qpor3va30c2qgdqsbsp10uncad.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -5,10 +5,10 @@ import 'package:get/get.dart';
 class LocationController extends GetxController {
   RxDouble top = 0.0.obs;
   RxDouble left = 0.0.obs;
-  RxDouble sTop=0.0.obs;
-  RxDouble sLeft=0.0.obs;
-  RxDouble tTop=0.0.obs;
-  RxDouble tLeft=0.0.obs;
+  RxDouble sTop = 0.0.obs;
+  RxDouble sLeft = 0.0.obs;
+  RxDouble tTop = 0.0.obs;
+  RxDouble tLeft = 0.0.obs;
   bool loading = true;
   late List locationList;
   Timer? myTimer;
@@ -18,4 +18,6 @@ class LocationController extends GetxController {
       LocationService.fetchLocation();
     });
   }
+
+  String? urlDownload;
 }

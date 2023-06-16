@@ -1,9 +1,12 @@
 import 'dart:io';
-import 'package:path/path.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:path_provider/path_provider.dart';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:hexcolor/hexcolor.dart';
+import 'package:worker_location_system/components/row_widget.dart';
 import 'package:worker_location_system/constants/const.dart';
 import 'package:worker_location_system/controllers/location_controller.dart';
+import 'package:worker_location_system/controllers/theme_controller.dart';
 import 'package:worker_location_system/models/current_isci.dart';
 import 'package:worker_location_system/service/location_service.dart';
 import 'dart:core';
@@ -20,27 +23,7 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   final konumController = Get.find<LocationController>();
-  
-  File? myImage;
-  Future getImage() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (image == null) {
-      return;
-    } else {
-      //  final imageTemp = File(image.path);
-      final storedImage = await savePickedImage(image.path);
-      setState(() {
-        myImage = storedImage;
-      });
-    }
-  }
-
-  Future<File> savePickedImage(String imagePath) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final name = basename(imagePath);
-    final image = File('${directory.path}/$name');
-    return File(imagePath).copy(image.path);
-  }
+  final themeController = Get.find<ThemeController>();
 
   @override
   void initState() {
@@ -48,8 +31,6 @@ class HomePageState extends State<HomePage> {
 
     LocationService.fetchLocation();
     konumController.startTimer();
-    var top = konumController.top.value;
-    var left = konumController.left.value;
   }
 
   @override
@@ -57,6 +38,33 @@ class HomePageState extends State<HomePage> {
     super.dispose();
 
     konumController.myTimer!.cancel();
+  }
+
+  PlatformFile? pickedFile;
+  UploadTask? uploadTask;
+  Future selectFile() async {
+    final result = await FilePicker.platform.pickFiles();
+    if (result == null) return;
+    setState(() {
+      pickedFile = result.files.first;
+      debugPrint(pickedFile!.name);
+    });
+  }
+
+  Future uploadFile() async {
+    final path = 'files/${pickedFile!.name}';
+    final file = File(pickedFile!.path!);
+    final ref = FirebaseStorage.instance.ref().child(path);
+    setState(() {
+      uploadTask = ref.putFile(file);
+    });
+
+    final snapshot = await uploadTask!.whenComplete(() => null);
+    konumController.urlDownload = await snapshot.ref.getDownloadURL();
+
+    setState(() {
+      uploadTask = null;
+    });
   }
 
   @override
@@ -79,23 +87,53 @@ class HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0, left: 8, top: 5),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: themeController.isDarkMode.value
+                      ? HexColor('0B2447')
+                      : HexColor('C58940'),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                width: double.infinity,
+                height: 120,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      MyRow(
+                          feature: 'İşçi Adı',
+                          value: Isci.workerName!.toUpperCase().toString()),
+                      MyRow(
+                          feature: 'İşçi Soyadı',
+                          value: Isci.workerSurname!.toUpperCase().toString()),
+                      MyRow(
+                          feature: 'Yaşı',
+                          value: Isci.workerAge!.toUpperCase().toString()),
+                      MyRow(
+                          feature: 'Cinsiyeti',
+                          value: Isci.workerGender!.toUpperCase().toString()),
+                      MyRow(
+                          feature: 'İşçi Rolü',
+                          value: Isci.workerRole!.toUpperCase().toString()),
+                    ],
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(
-              height: 100,
+              height: 15,
             ),
             Center(
               child: Stack(
                 children: [
                   Container(
-                      decoration: BoxDecoration(boxShadow: [
-                        BoxShadow(color: Colors.grey.shade600, blurRadius: 17)
-                      ]),
-                      child: myImage != null
-                          ? Image.file(
-                              semanticLabel: 'map',
-                              myImage!,
-                              fit: BoxFit.fill,
+                      child: konumController.urlDownload != null
+                          ? Image.network(
                               width: 300,
                               height: 300,
+                              konumController.urlDownload!,
+                              fit: BoxFit.fill,
                             )
                           : Image.asset(Constants.mapUrl)),
                   Obx(
@@ -185,11 +223,42 @@ class HomePageState extends State<HomePage> {
             const SizedBox(
               height: 20,
             ),
-            ElevatedButton(
-                onPressed: () {
-                  getImage();
-                },
-                child: const Text('Haritayı galeriden seç'))
+            Padding(
+              padding: const EdgeInsets.only(right: 35.0, left: 35),
+              child: ElevatedButton(
+                  onPressed: () {
+                    selectFile();
+                  },
+                  child: Row(
+                    children: const [
+                      Icon(Icons.image_outlined),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Text(
+                        'Dosyalarımdan Harita Seç',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ],
+                  )),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(right: 35.0, left: 35),
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(),
+                  onPressed: () {
+                    uploadFile();
+                  },
+                  child: Row(
+                    children: const [
+                      Icon(Icons.upload),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      Text('Fotoğrafı Yükle', style: TextStyle(fontSize: 16)),
+                    ],
+                  )),
+            )
           ],
         ),
       ),
